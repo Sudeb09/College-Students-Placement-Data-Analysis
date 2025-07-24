@@ -28,11 +28,11 @@ Here's how I'd describe setting up my SQL database for this project:
 
 -----
 
-## My SQL Database Setup for College Placement Data Analysis
+## SQL Database Setup for College Placement Data Analysis
 
 I'm getting my database ready for this exciting college student placement data analysis project\! Here are the simple SQL steps I'm taking to prepare my environment.
 
-### Step 1: Creating My `college_placement` Database
+### Step 1: Creating `college_placement` Database
 
 First things first, I need a dedicated space for all my student placement data. This helps me keep everything organized and separate from other projects.
 
@@ -43,7 +43,7 @@ CREATE DATABASE college_placement;
 **What I'm doing here:**
 This `CREATE DATABASE` command is how I'm telling my SQL system to make a new database named `college_placement`. Once it's created, I'll make sure to select it (like using `USE college_placement;` in some systems) so all my tables go into the right place.
 
-### Step 2: Building My `student` Table
+### Step 2: Building `student` Table
 
 Now that I have my database, I need to define the structure for my `student` table. This table will hold all 10,000 records of student data, so getting the columns and their types right is crucial.
 
@@ -81,7 +81,7 @@ With these two commands, my `college_placement` database and the `student` table
 
 -----
 
-## My Initial Data Exploration: Viewing the First 5 Records
+## Initial Data Exploration: Viewing the First 5 Records
 
 After setting up my database and table, the very first thing I want to do is take a quick peek at the data to make sure everything loaded correctly and to get a feel for its structure.
 
@@ -99,7 +99,7 @@ SELECT * FROM student LIMIT 5;
   * `FROM student`: This specifies that I want to retrieve data from my `student` table.
   * `LIMIT 5`: This is crucial\! It restricts the output to only the first 5 rows, which is perfect for a quick check without pulling the entire 10,000 records.
 
-**My Result (First 5 Rows of `student` table):**
+**Result (First 5 Rows of `student` table):**
 
 | college\_id | iq  | prev\_sem\_result | cgpa | academic\_performance | internship\_experience | extra\_curricular\_score | communication\_skills | projects\_completed | placement |
 | :--------- | :-- | :-------------- | :--- | :------------------- | :-------------------- | :--------------------- | :------------------- | :----------------- | :-------- |
@@ -109,7 +109,7 @@ SELECT * FROM student LIMIT 5;
 | CLG0055    | 122 | 5.47            | 5.75 | 6                    | Yes                   | 1                      | 6                    | 1                  | No        |
 | CLG0004    | 96  | 7.91            | 7.69 | 7                    | No                    | 8                      | 10                   | 2                  | No        |
 
-**My Observations:**
+**Observations:**
 Looking at these first 5 rows, I can see that:
 
   * The `College_ID`s are in the expected format.
@@ -137,11 +137,11 @@ SELECT COUNT(*) FROM student;
 
   * `COUNT(*)`: This aggregate function simply counts all rows in the `student` table.
 
-**My Result:**
+**Result:**
 
   * `Total Count of students = 10000`
 
-**My Observation:**
+**Observation:**
 This confirms that exactly 10,000 records were loaded, matching my expectation for the dataset size. Perfect\!
 
 #### Q2. Are there any null/missing values?
@@ -167,13 +167,13 @@ FROM student;
 
   * `SUM(CASE WHEN ... IS NULL THEN 1 ELSE 0 END)`: For each column, this pattern checks if a value is `NULL`. If it is, it counts 1; otherwise, it counts 0. Summing these up gives me the total count of missing values for each respective column.
 
-**My Result:**
+**Result:**
 
 | missing\_college\_id | missing\_iq | missing\_prev\_sem\_result | missing\_cgpa | missing\_academic\_performance | missing\_internship\_experience | missing\_extra\_curricular\_score | missing\_communication\_skills | missing\_projects\_completed | missing\_placement |
 | :----------------- | :--------- | :---------------------- | :----------- | :--------------------------- | :---------------------------- | :----------------------------- | :--------------------------- | :------------------------- | :---------------- |
 | 0                  | 0          | 0                       | 0            | 0                            | 0                             | 0                              | 0                            | 0                          | 0                 |
 
-**My Observation:**
+**Observation:**
 This is fantastic news\! The result shows `0` for all columns, meaning there are no missing or null values anywhere in my dataset. This greatly simplifies the analysis as I don't need to worry about imputation or handling incomplete records.
 
 #### Q3. Are `College_IDs` really unique to 100 colleges?
@@ -189,11 +189,11 @@ FROM student;
 
   * `COUNT(DISTINCT College_id)`: This counts only the unique values within the `College_id` column.
 
-**My Result:**
+**Result:**
 
   * `total_college_id = 100`
 
-**My Observation:**
+**Observation:**
 This confirms that there are indeed exactly 100 distinct college IDs in the dataset, aligning perfectly with the provided description. This is important for any potential college-level analysis later on.
 
 ### Summary of Data Quality Findings:
@@ -244,14 +244,14 @@ I'm using Common Table Expressions (CTEs) here to make the query more readable a
   * `total_students`: This CTE simply gets the grand total number of students in the dataset.
   * The final `SELECT` statement then joins these two CTEs (using `CROSS JOIN` since `total_students` is a single row) to calculate the `placement_rate` as a percentage, rounded to two decimal places.
 
-**My Result:**
+**Result:**
 
 | placement | no\_of\_students | placement\_rate |
 | :-------- | :------------- | :------------- |
 | No        | 8341           | 83.41          |
 | Yes       | 1659           | 16.59          |
 
-**My Observation:**
+**Observation:**
 This is a very insightful initial finding\! It shows that a significant majority of students, **83.41%**, were *not* placed, while only **16.59%** secured a placement. This immediately tells me that placement is a relatively challenging outcome in this dataset, and I'll be looking for factors that differentiate the successful 16.59%.
 
 #### Q2. Placement rate by internship experience
@@ -275,14 +275,14 @@ GROUP BY internship_experience;
   * `SUM(CASE WHEN Placement = 'Yes' THEN 1 ELSE 0 END)`: This is a conditional sum. It counts how many students within each group had a `Placement` of 'Yes'.
   * `ROUND(... * 100.0 / COUNT(*), 2)`: Calculates the placement rate for each group as a percentage, rounded to two decimal places.
 
-**My Result:**
+**Result:**
 
 | internship\_experience | total\_students | placed\_students | placement\_rate |
 | :-------------------- | :------------- | :-------------- | :------------- |
 | No                    | 6036           | 1012            | 16.77          |
 | Yes                   | 3964           | 647             | 16.32          |
 
-**My Observation:**
+**Observation:**
 This result is quite surprising\! I expected a noticeable difference, but the placement rates for students with and without internship experience are very similar: **16.77% for those without internships** and **16.32% for those with internships**. This suggests that, based on this dataset, simply having an internship doesn't significantly increase the *probability* of placement. It might mean that internships are common enough that they don't provide a unique advantage, or other factors play a much larger role. This is a key insight that challenges a common assumption\!
 
 -----
@@ -310,14 +310,14 @@ GROUP BY placement;
 **What this query does:**
 I'm grouping my students by their `placement` status (`'Yes'` or `'No'`) and then calculating the average (`AVG`) for `cgpa`, `prev_sem_result`, and `Academic_Performance` within each group. I'm also using `ROUND(...::Decimal, 2)` to ensure my averages are nicely formatted to two decimal places.
 
-**My Result:**
+**Result:**
 
 | placement | average\_cgpa | average\_prev\_sem\_result | avgacademicperformance |
 | :-------- | :----------- | :---------------------- | :--------------------- |
 | No        | 7.32         | 7.33                    | 5.57                   |
 | Yes       | 8.59         | 8.57                    | 5.45                   |
 
-**My Observation:**
+**Observation:**
 This is a very clear indicator\! Placed students have significantly higher average CGPAs (8.59 vs. 7.32) and previous semester results (8.57 vs. 7.33) compared to unplaced students. This strongly suggests that strong academic grades are a major differentiator. Interestingly, the `Academic_Performance` rating shows a slight *decrease* for placed students (5.45 vs. 5.57), which is counter-intuitive. This might mean `Academic_Performance` as a single rating isn't as strong a predictor as the actual GPA metrics, or its scale needs further investigation.
 
 #### Q2. What's the placement rate by `Academic_Performance` rating?
@@ -338,7 +338,7 @@ ORDER BY Academic_Performance;
 **What this query does:**
 I'm grouping the students by their `Academic_Performance` score (from 1 to 10). For each score, I'm counting the total students, the number of placed students, and then calculating the placement rate as a percentage, rounded to two decimal places. Finally, I'm ordering the results by `Academic_Performance` for easy readability.
 
-**My Result:**
+**Result:**
 
 | academic\_performance | totalstudents | placedstudents | placementrate |
 | :------------------- | :------------ | :------------- | :------------ |
@@ -353,7 +353,7 @@ I'm grouping the students by their `Academic_Performance` score (from 1 to 10). 
 | 9                    | 987           | 163            | 16.51         |
 | 10                   | 1044          | 170            | 16.28         |
 
-**My Observation:**
+**Observation:**
 This is quite surprising\! Unlike CGPA, `Academic_Performance` rating doesn't show a clear positive correlation with placement rates. The rates hover around 14.5% to 18.7% across all performance levels, with no consistent upward trend as the `Academic_Performance` score increases. In fact, some of the highest rates are seen at lower `Academic_Performance` scores (e.g., 4 with 18.73%), and some lower rates at higher scores (e.g., 7 with 14.51%). This confirms my earlier suspicion that this particular rating might not be a strong individual predictor of placement in this dataset.
 
 #### Q3. What's the placement rate by CGPA ranges?
@@ -380,7 +380,7 @@ ORDER BY CGPA_Range;
 **What this query does:**
 I'm using a `CASE` statement to categorize students into distinct `CGPA_Range` bins: '9.0 - 10.0', '8.0 - 8.9', '7.0 - 7.9', '6.0 - 6.9', and 'Below 6.0'. Then, I'm grouping by these new ranges and calculating the `TotalStudents`, `PlacedStudents`, and `PlacementRate` for each range, similar to previous queries. I'm ordering by `CGPA_Range` to see the progression clearly.
 
-**My Result:**
+**Result:**
 
 | cgpa\_range | totalstudents | placedstudents | placementrate |
 | :--------- | :------------ | :------------- | :------------ |
@@ -390,7 +390,7 @@ I'm using a `CASE` statement to categorize students into distinct `CGPA_Range` b
 | 9.0 - 10.0 | 2064          | 684            | 33.14         |
 | Below 6.0  | 1946          | 91             | 4.68          |
 
-**My Observation:**
+**Observation:**
 This is the most impactful finding so far regarding academic performance\! The results show a dramatic increase in placement rates for students with higher CGPAs:
 
   * Students with CGPA **below 8.0** (i.e., 'Below 6.0', '6.0 - 6.9', '7.0 - 7.9') have very low placement rates, ranging from **4.66% to 5.00%**.
@@ -423,14 +423,14 @@ GROUP BY internship_experience;
 **What this query does:**
 I'm grouping students by whether they have `internship_experience` ('Yes' or 'No'), then calculating the total students, the number of placed students, and the resulting placement rate for each group.
 
-**My Result:**
+**Result:**
 
 | internship\_experience | total\_students | placed\_students | placement\_rate |
 | :-------------------- | :------------- | :-------------- | :------------- |
 | No                    | 6036           | 1012            | 16.77          |
 | Yes                   | 3964           | 647             | 16.32          |
 
-**My Observation:**
+**Observation:**
 This result continues to be quite surprising and counter-intuitive\! My data suggests that having an internship doesn't significantly boost the placement rate. In fact, students without internships had a slightly *higher* placement rate (16.77%) than those with internships (16.32%). This challenges the common belief that internships are a direct path to placement success in this specific dataset. It makes me wonder if the quality of internships varies greatly, or if other factors overshadow this experience.
 
 #### Q2. What's the placement rate by the number of `Projects_Completed`?
@@ -451,7 +451,7 @@ ORDER BY Projects_Completed;
 **What this query does:**
 I'm grouping students by the number of `Projects_Completed` (from 0 to 5). For each project count, I'm calculating the total students, placed students, and their respective placement rate, then ordering by the number of projects.
 
-**My Result:**
+**Result:**
 
 | projects\_completed | totalstudents | placedstudents | placement\_rate |
 | :----------------- | :------------ | :------------- | :------------- |
@@ -462,7 +462,7 @@ I'm grouping students by the number of `Projects_Completed` (from 0 to 5). For e
 | 4                  | 1693          | 381            | 22.50          |
 | 5                  | 1702          | 404            | 23.74          |
 
-**My Observation:**
+**Observation:**
 This is a *very* significant finding\! There's a dramatic jump in placement rates once students complete **2 or more projects**. Students with 0 or 1 project have extremely low placement rates (around 2-3%). However, those with 2, 3, 4, or 5 projects consistently achieve placement rates in the **22-24% range**. This clearly indicates that completing a sufficient number of projects is a strong predictor of placement success in this dataset, much more so than just having an internship.
 
 #### Q3. What's the average `Communication_Skills` score for placed vs. unplaced students?
@@ -480,14 +480,14 @@ GROUP BY Placement;
 **What this query does:**
 I'm grouping students by their `Placement` status and calculating the average `Communication_Skills` score for each group, rounded to two decimal places.
 
-**My Result:**
+**Result:**
 
 | placement | avgcommunicationskills |
 | :-------- | :--------------------- |
 | No        | 5.14                   |
 | Yes       | 7.66                   |
 
-**My Observation:**
+**Observation:**
 This is another strong indicator\! Placed students have a notably higher average `Communication_Skills` score (7.66) compared to unplaced students (5.14). This suggests that strong communication skills are indeed a significant factor contributing to placement success. This makes sense, as good communication is vital during interviews and professional interactions.
 
 #### Q4. What's the placement rate by `Extra_Curricular_Score` ranges?
@@ -512,7 +512,7 @@ ORDER BY EC_Score_Range;
 **What this query does:**
 I'm categorizing students into three `EC_Score_Range` bins: 'Excellent (8-10)', 'Good (5-7)', and 'Average/Low (0-4)'. Then, I'm calculating the total students, placed students, and placement rate for each range, ordering the results by the range name.
 
-**My Result:**
+**Result:**
 
 | ec\_score\_range    | totalstudents | placedstudents | placementrate |
 | :---------------- | :------------ | :------------- | :------------ |
@@ -520,7 +520,7 @@ I'm categorizing students into three `EC_Score_Range` bins: 'Excellent (8-10)', 
 | Excellent (8-10)  | 2718          | 446.00         | 16.41         |
 | Good (5-7)        | 2697          | 449.00         | 16.65         |
 
-**My Observation:**
+**Observation:**
 Similar to `Internship_Experience` and `Academic_Performance` rating, the `Extra_Curricular_Score` doesn't show a strong, consistent correlation with placement rates. The rates across all categories ('Average/Low', 'Good', 'Excellent') are very similar, hovering around **16.4% to 16.7%**, which is close to the overall placement rate of the dataset. This suggests that, while extracurriculars are valuable for holistic development, they might not be a primary *differentiator* for placement in this particular dataset.
 
 -----
@@ -546,14 +546,14 @@ GROUP BY Placement;
 **What this query does:**
 I'm grouping students by their `Placement` status and calculating the average `IQ` score for each group, rounded to two decimal places.
 
-**My Result:**
+**Result:**
 
 | placement | avgiq  |
 | :-------- | :----- |
 | No        | 97.55  |
 | Yes       | 109.12 |
 
-**My Observation:**
+**Observation:**
 This is a significant finding\! Placed students have a considerably higher average IQ (109.12) compared to unplaced students (97.55). This suggests that a higher IQ score is indeed associated with a greater likelihood of placement.
 
 #### Q2. What's the placement rate by IQ ranges?
@@ -579,7 +579,7 @@ ORDER BY IQ_Range;
 **What this query does:**
 I'm using a `CASE` statement to classify students into four `IQ_Range` bins: 'Very High (\>=120)', 'High (110-119)', 'Average (90-109)', and 'Below Average (\<90)'. For each range, I'm calculating the total students, placed students, and the placement rate, then ordering the results by IQ range.
 
-**My Result:**
+**Result:**
 
 | iq\_range            | totalstudents | placedstudents | placementrate |
 | :------------------ | :------------ | :------------- | :------------ |
@@ -588,7 +588,7 @@ I'm using a `CASE` statement to classify students into four `IQ_Range` bins: 'Ve
 | High (110-119)      | 1590          | 610.00         | 38.36         |
 | Very High (\>=120)   | 923           | 404.00         | 43.77         |
 
-**My Observation:**
+**Observation:**
 This query reveals a very strong correlation\!
 
   * Students with 'Average' or 'Below Average' IQs (below 110) have significantly lower placement rates, hovering around **8-9%**.
@@ -615,7 +615,7 @@ LIMIT 5;
 **What this query does:**
 I'm grouping the data by `College_ID`, calculating the total students, placed students, and the placement rate for each college. Then, I'm ordering the results in descending order of `PlacementRate` and taking the top 5.
 
-**My Result:**
+**Result:**
 
 | college\_id | totalstudents | placedstudents | placementrate |
 | :--------- | :------------ | :------------- | :------------ |
@@ -625,7 +625,7 @@ I'm grouping the data by `College_ID`, calculating the total students, placed st
 | CLG0012    | 110           | 26             | 23.64         |
 | CLG0084    | 102           | 24             | 23.53         |
 
-**My Observation:**
+**Observation:**
 These are the top 5 performing colleges in terms of placement rates, with rates ranging from 23.53% to 26.42%. While these rates are higher than the overall dataset average (16.59%), it's important to remember that even the top colleges still have a majority of students not placed. This suggests that while college reputation might play a role, individual student attributes are likely more dominant factors.
 
 #### Q4. What's the average CGPA and Academic Performance for placed students, grouped by IQ range?
@@ -651,7 +651,7 @@ ORDER BY IQ_Range;
 **What this query does:**
 First, I filter the data to include `WHERE Placement = 'Yes'`. Then, I categorize these placed students into `IQ_Range` bins. For each IQ range, I calculate the average `CGPA` and `Academic_Performance` of *only the placed students* within that range, rounded to two decimal places.
 
-**My Result:**
+**Result:**
 
 | iq\_range            | avgcgpa\_placed | avgacademicperformance\_placed |
 | :------------------ | :------------- | :---------------------------- |
@@ -660,7 +660,7 @@ First, I filter the data to include `WHERE Placement = 'Yes'`. Then, I categoriz
 | High (110-119)      | 8.30           | 5.51                          |
 | Very High (\>=120)   | 8.34           | 5.44                          |
 
-**My Observation:**
+**Observation:**
 This is an intriguing result\!
 
   * For placed students, those in the 'Average' and 'Below Average' IQ ranges actually have slightly *higher* average CGPAs (around 9.02-9.05) than placed students in the 'High' and 'Very High' IQ ranges (around 8.30-8.34).
@@ -690,11 +690,11 @@ WHERE CGPA > 8.0 AND Internship_Experience = 'Yes';
 **What this query does:**
 I'm filtering my dataset to include *only* students who have a `CGPA` greater than 8.0 *AND* have `Internship_Experience` as 'Yes'. Then, I'm calculating the overall `PlacementRate` for this specific group.
 
-**My Result:**
+**Result:**
 
   * `placementrate = 33.89`
 
-**My Observation:**
+**Observation:**
 This is quite telling\! The placement rate for students with both a high CGPA (above 8.0) and internship experience is **33.89%**.
 
   * Recall that high CGPA students (8.0-8.9 and 9.0-10.0) had placement rates of around 33-34%.
@@ -727,13 +727,13 @@ I'm looking for a very specific subset of students:
   * Their `Projects_Completed` must be high (\>= 3).
     For this filtered group, I'm then counting them and calculating their average CGPA, average communication skills, and average projects completed.
 
-**My Result:**
+**Result:**
 
 | numberofstudents | avgcgpa | avgcommskills | avgprojects |
 | :--------------- | :------ | :------------ | :---------- |
 | 397              | 7.42    | 9.01          | 4           |
 
-**My Observation:**
+**Observation:**
 This is a powerful insight\! I found **397 students** who got placed despite having a CGPA (average 7.42) that is lower than the overall average CGPA for placed students (which was 8.59 from Q3.1). These students compensated by having:
 
   * **Excellent Communication Skills (average 9.01)**
@@ -762,14 +762,14 @@ GROUP BY Placement;
 **What this query does:**
 I'm grouping all students by their `Placement` status. For each group, I'm calculating the average of almost every numerical column. For `Internship_Experience`, I'm calculating the percentage of students who had an internship. I'm using `CEIL()` (ceiling) to round up the averages to the nearest whole number, making the "typical profile" easier to grasp at a glance.
 
-**My Result:**
+**Result:**
 
 | placement | avgiq | avgprevsemresult | avgcgpa | avgacademicperformance | pctinternshipexperience | avgextracurricularscore | avgcommunicationskills | avgprojectscompleted |
 | :-------- | :---- | :--------------- | :------ | :--------------------- | :---------------------- | :---------------------- | :--------------------- | :------------------- |
 | No        | 98    | 8                | 8       | 6                      | 40                      | 5                       | 6                      | 3                    |
 | Yes       | 110   | 9                | 9       | 6                      | 39                      | 5                       | 8                      | 4                    |
 
-**My Observation:**
+**Observation:**
 This summary table is incredibly powerful, painting a clear picture of the differences between placed and unplaced students:
 
   * **IQ:** Placed students typically have a significantly higher IQ (110 vs. 98).
